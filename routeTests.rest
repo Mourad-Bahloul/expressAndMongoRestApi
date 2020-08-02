@@ -2,7 +2,7 @@ GET http://localhost:3000/subscribers
 
 ###
 
-GET http://localhost:3000/subscribers/id
+GET http://localhost:3000/subscribers/5f26f8be35a55e1a43ea348b
 
 ###
 
@@ -12,4 +12,15 @@ Content-Type: application/json
 {
     "name": "foo 2",
     "channel": "bar"
+}
+
+###
+DELETE http://localhost:3000/subscribers/5f26f8be35a55e1a43ea348b
+
+###
+PATCH  http://localhost:3000/subscribers/5f26f8a035a55e1a43ea348a
+Content-Type: application/json
+
+{
+    "name": "blooo 4"
 }

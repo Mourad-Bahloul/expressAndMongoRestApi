@@ -13,7 +13,8 @@ router.get('/', async (req, res) => {
 })
 
 // Getting onesubscriber
-router.get('/:id', async (req, res) => {
+router.get('/:id', getSubscriber, async (req, res) => {
+    res.json(res.subscriber)
 })
 
 // Creating one subscriber
@@ -32,12 +33,46 @@ router.post('/', async (req, res) => {
 })
 
 // Updating one onesubscriber
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', getSubscriber, async (req, res) => {
+    
+    if(req.body.name) {
+        res.subscriber.name = req.body.name
+    }
+    if(req.body.channel) {
+        res.subscriber.channel = req.body.channel
+    }
+
+    try {
+        const updatedSubscriber = await res.subscriber.save()
+        res.json(updatedSubscriber)
+    } catch (error) {
+        res.status(400).json({message: error.message})
+    }
 })
 
 // Deleting one onesubscriber
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', getSubscriber, async (req, res) => {
+    try {
+        await res.subscriber.remove()
+        res.json('Subscriber deleted')
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
 })
 
+// middleware function
+async function getSubscriber (req, res, next) {
+    let subscriber
+    try {
+        subscriber = await SubscribersModel.findById(req.params.id)
+        if (subscriber == null)
+            // leave immediately
+            return res.status(404).json({message: 'User not found'})
+    } catch (error) {
+        return res.status(500).json({message: error.message})
+    }
+    res.subscriber = subscriber
+    next()
+}
 
 module.exports = router
